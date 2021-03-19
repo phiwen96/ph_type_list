@@ -18,10 +18,7 @@ struct Math
 
 
 
-
-
-
-
+namespace test_type_list {
 
 TEST_CASE ( "get last element from a type list with type_list::last", "[type_list]" ) {
     GIVEN ( "A type_list with some types" ) {
@@ -45,6 +42,8 @@ TEST_CASE ("get size of type_list") {
         
         REQUIRE (given::size == 2);
     }
+}
+
 }
 
 
