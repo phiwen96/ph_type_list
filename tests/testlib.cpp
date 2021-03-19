@@ -44,11 +44,19 @@ TEST_CASE ("get size of type_list") {
     }
 }
 
-TEST_CASE ("get type at type_list index i") {
+TEST_CASE ("get type at type_list-index i") {
+    
     GIVEN ("A type_list with some types") {
         using TL = type_list <bool, string, int, char const*, string>;
         
-        REQUIRE (is_same_v <TL::type_at<0>, bool>);
+        SECTION ("get type_element at index") {
+            REQUIRE (is_same_v <TL::type_element_at <0>, bool>);
+        }
+        
+        SECTION ("get type_list at index") {
+//            REQUIRE (is_same_v <TL::type_list_at<1>, _type_list <1, string, int, char const*, string>>);
+        }
+        
     }
 }
 
