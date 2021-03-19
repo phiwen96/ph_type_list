@@ -39,6 +39,14 @@ TEST_CASE ( "get first element from a type list with type_list::last", "[type_li
     }
 }
 
+TEST_CASE ("get size of type_list") {
+    GIVEN ("A type_list with some types") {
+        using given = type_list <string, int>;
+        
+        REQUIRE (given::size == 2);
+    }
+}
+
 
 //int main ()
 //{

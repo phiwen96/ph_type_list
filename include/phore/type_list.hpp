@@ -2,21 +2,42 @@
 
 
 
-template <class... types>
-struct type_list;
+template <int, class... types>
+struct _type_list;
 
 
-template <class First, class... Rest>
-struct type_list <First, Rest...>
+
+
+template <int I, class First, class... Rest>
+struct _type_list <I, First, Rest...>
 {
+#define NEXT _type_list <I + 1, Rest...>
+    
     using first = First;
-    using last = typename type_list <Rest...>::last;
+    using last = typename NEXT::last;
+    inline static constexpr int i = I;
+    inline static constexpr int size = NEXT::size;
+#undef NEXT
 };
 
 
-template <class Type>
-struct type_list <Type>
+template <int I, class Type>
+struct _type_list <I, Type>
 {
     using first = Type;
     using last = Type;
+    inline static constexpr int i = I;
+    inline static constexpr int size = I + 1;
 };
+
+
+template <class... types>
+using type_list = _type_list <0, types...>;
+
+
+
+
+
+
+
+
