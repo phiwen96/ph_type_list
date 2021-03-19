@@ -11,6 +11,7 @@ constexpr auto split (tuple <T...> const& t, index_sequence <I1...> ind1, index_
 {
       return make_pair (make_tuple (get <I1> (t)...), make_tuple (get <sizeof... (I1) + I2> (t)...));
 }
+
 template <size_t splitIndex, class... T, size_t N = sizeof... (T)>
 constexpr auto split (tuple <T...> const& t) -> decltype (auto)
 {

@@ -97,6 +97,12 @@ TEST_CASE ("use typelist as template parameter for std::tuple") {
         REQUIRE (is_base_of_v <tuple <int, string, int, char>, tuple <TL>>);
     }
 }
+TEST_CASE ("split typelist into 2 typelists") {
+    GIVEN ("A type_list with some types") {
+        using TL = type_list <int, string, int, char>;
+        REQUIRE (is_same_v <TL, invoke_result_t <split <2, int, string, int, char>, declval <TL> ()>>);
+    }
+}
 }
 
 

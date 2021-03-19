@@ -92,6 +92,22 @@ struct tuple <type_list <T...>> : std::tuple <T...>
 
 
 
+template <class... T, size_t... I1, size_t... I2>
+constexpr auto split (type_list <T...> const& t, index_sequence <I1...> ind1, index_sequence <I2...> ind2) -> decltype(auto)
+{
+    using TL = type_list <T...>;
+//    return type_list <int>{};
+    return type_list <typename TL::template at<I1>::type...> {};
+//      return make_pair (make_tuple (get <I1> (t)...), make_tuple (get <sizeof... (I1) + I2> (t)...));
+}
+
+template <size_t splitIndex, class... T, size_t N = sizeof... (T)>
+constexpr auto split (type_list <T...> const& t) -> decltype (auto)
+{
+      constexpr size_t i = splitIndex;
+      constexpr size_t j = N - splitIndex;
+      return split (t, make_index_sequence <i> {}, make_index_sequence <j> {});
+}
 
 
 
