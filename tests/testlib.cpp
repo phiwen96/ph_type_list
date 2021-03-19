@@ -62,10 +62,16 @@ TEST_CASE ("get type at index i") {
         }
     }
 }
-TEST_CASE ("get tail") {
+TEST_CASE ("get trailing typelist") {
     GIVEN ("A type_list with some types") {
-        using given = type_list <string, int, char>;
-//        REQUIRE (given::size == 2);
+        using TL = type_list <int, string, int, char>;
+        REQUIRE (SAME_TYPE (TL::iter::trailing::type, string));
+    }
+}
+TEST_CASE ("get leading typelist") {
+    GIVEN ("A type_list with some types") {
+        using TL = type_list <int, string, int, char>;
+//        REQUIRE (SAME_TYPE (TL::iter::trailing::type, string));
     }
 }
 }
