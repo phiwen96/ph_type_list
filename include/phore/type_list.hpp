@@ -6,15 +6,17 @@ template <class... types>
 struct type_list;
 
 
-template <class first, class... rest>
-struct type_list <first, rest...>
+template <class First, class... Rest>
+struct type_list <First, Rest...>
 {
-    using last = typename type_list <rest...>::last;
+    using first = First;
+    using last = typename type_list <Rest...>::last;
 };
 
 
-template <class type>
-struct type_list <type>
+template <class Type>
+struct type_list <Type>
 {
-    using last = type;
+    using first = Type;
+    using last = Type;
 };

@@ -1,10 +1,4 @@
-//#define CATCH_CONFIG_MAIN
-//#include <catch2/catch.hpp>
-//#include <phulkan_generator/gpu.hpp>
-#include <phore/phore.hpp>
-#include <phore/type_list.hpp>
-
-using namespace std;
+#include "headers.hpp"
 
 
 
@@ -29,19 +23,34 @@ struct Math
 
 
 
-
-
-
-int main ()
-{
-    
-    
-    
-    
-    
-    
-    return 0;
+TEST_CASE ( "get last element from a type list with type_list::last", "[type_list]" ) {
+    GIVEN ( "A type_list with some types" ) {
+        using given = type_list <string, int>;
+        
+        REQUIRE (is_same_v <given::last, int>);
+    }
 }
+
+TEST_CASE ( "get first element from a type list with type_list::last", "[type_list]" ) {
+    GIVEN ( "A type_list with some types" ) {
+        using given = type_list <string, int>;
+        
+        REQUIRE (is_same_v <given::first, string>);
+    }
+}
+
+
+//int main ()
+//{
+//
+//    static_assert(is_same_v <type_list <string, int>::last, int>, "fel");
+//
+//
+//
+//
+//
+//    return 0;
+//}
 
 
 
