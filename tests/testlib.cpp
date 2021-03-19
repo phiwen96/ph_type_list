@@ -91,6 +91,12 @@ TEST_CASE ("use tuple as template parameters for type_list") {
         REQUIRE (is_same_v <type_list <tuple <int, string, int, char>>::iter::next::type, string>);
     }
 }
+TEST_CASE ("use typelist as template parameter for std::tuple") {
+    GIVEN ("A type_list with some types") {
+        using TL = type_list <int, string, int, char>;
+        REQUIRE (is_base_of_v <tuple <int, string, int, char>, tuple <TL>>);
+    }
+}
 }
 
 

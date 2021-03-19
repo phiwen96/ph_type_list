@@ -82,6 +82,12 @@ struct _type_list <Head, Before, I, Type> {
 };
 
 
+template <class... T>
+struct tuple <type_list <T...>> : std::tuple <T...>
+{
+    
+};
+
 
 
 
