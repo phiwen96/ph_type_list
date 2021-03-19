@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 //#include <phulkan_generator/gpu.hpp>
-#include <const_str/const_str.hpp>
+#include <phore/phore.hpp>
 
 
 using namespace std;

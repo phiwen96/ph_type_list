@@ -1,25 +1,25 @@
 
 
-file(GLOB_RECURSE HEADER_LIST "${const_str_SOURCE_DIR}/include/*.hpp")
-file(GLOB SOURCE_LIST ${const_str_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE HEADER_LIST "${phore_SOURCE_DIR}/include/*.hpp")
+file(GLOB SOURCE_LIST ${phore_SOURCE_DIR}/src/*.cpp)
 
-add_library (const_str
+add_library (phore
 	${SOURCE_LIST}  ${HEADER_LIST} 
 )
 
-add_library (ph::const_str ALIAS const_str)
+add_library (ph::phore ALIAS phore)
 
-target_include_directories (const_str PUBLIC ${const_str_SOURCE_DIR}/include)
+target_include_directories (phore PUBLIC ${const_str_SOURCE_DIR}/include)
 
-target_compile_features (const_str PUBLIC cxx_std_20)
+target_compile_features (phore PUBLIC cxx_std_20)
 
 
-target_include_directories(const_str PRIVATE
-    $<BUILD_INTERFACE:${const_str_SOURCE_DIR}/include/const_str>
-    $<INSTALL_INTERFACE:include/const_str>
+target_include_directories(phore PRIVATE
+    $<BUILD_INTERFACE:${phore_SOURCE_DIR}/include/phore>
+    $<INSTALL_INTERFACE:include/phore>
 )
 
-target_include_directories(const_str PUBLIC
-    $<BUILD_INTERFACE:${const_str_SOURCE_DIR}/include>
+target_include_directories(phore PUBLIC
+    $<BUILD_INTERFACE:${phore_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
