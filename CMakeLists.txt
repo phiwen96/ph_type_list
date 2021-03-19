@@ -43,6 +43,8 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
 endif()
 
+find_package (Boost 1.74 REQUIRED)
+
 add_subdirectory (src)
 
 

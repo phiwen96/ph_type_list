@@ -1,15 +1,19 @@
 
 
-file(GLOB_RECURSE HEADER_LIST "${phore_SOURCE_DIR}/include/*.hpp")
-file(GLOB SOURCE_LIST ${phore_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE HEADER_LIST "${PROJECT_SOURCE_DIR}/include/*.hpp")
+file(GLOB SOURCE_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 add_library (phore
 	${SOURCE_LIST}  ${HEADER_LIST} 
 )
 
-add_library (ph::phore ALIAS phore)
 
-target_include_directories (phore PUBLIC ${const_str_SOURCE_DIR}/include)
+
+ph_precompile (TARGET phore PUBLIC PCH ${std_pch} ${boost_pch})
+
+add_library (ph::phore ALIAS phore)
+target_link_libraries (phore PRIVATE ${Boost_LIBRARIES})
+target_include_directories (phore PUBLIC ${PROJECT_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
 
 target_compile_features (phore PUBLIC cxx_std_20)
 
