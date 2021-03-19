@@ -102,7 +102,7 @@ constexpr auto split (type_list <T...> const& t, index_sequence <I1...> ind1, in
 }
 
 template <size_t splitIndex, class... T, size_t N = sizeof... (T)>
-constexpr auto split (type_list <T...> const& t) -> decltype (auto)
+constexpr auto psplit (type_list <T...> const& t) -> decltype (auto)
 {
       constexpr size_t i = splitIndex;
       constexpr size_t j = N - splitIndex;
