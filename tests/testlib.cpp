@@ -27,7 +27,7 @@ namespace test_type_list
 TEST_CASE ( "get first element", "[type_list]" ) {
     GIVEN ( "A type_list with some types" ) {
         using given = type_list <string, int>;
-        REQUIRE (is_same_v <given::iter::first, string>);
+        REQUIRE (is_same_v <given::iter::next::iter::first::type, string>);
     }
 }
 TEST_CASE ( "get last element", "[type_list]" ) {

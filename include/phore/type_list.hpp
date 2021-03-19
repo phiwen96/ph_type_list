@@ -15,7 +15,7 @@ struct _type_list <Head, Before, I, First, Rest...> {
         using type_list = SELF;
         using before    = Before;
         using next      = NEXT;
-        using first     = First;
+        using first     = conditional_t <is_same_v <Head, null>, SELF, Head>;
         using last      = typename NEXT::iter::last;
         using trailing  = next;
         using leading   = Before;
@@ -41,7 +41,7 @@ struct _type_list <Head, Before, I, Type> {
         using type_list     = SELF;
         using before        = Before;
         using next          = null;
-        using first         = conditional_t <is_same_v <Head, null>, SELF, typename Head::iter::first>;
+        using first         = conditional_t <is_same_v <Head, null>, SELF, Head>;
         using last          = SELF;
         using trailing      = null;
         using leading       = Before;
