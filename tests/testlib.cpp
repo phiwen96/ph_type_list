@@ -74,6 +74,16 @@ TEST_CASE ("get leading typelist") {
         REQUIRE (SAME_TYPE (TL::iter::next::iter::leading::type, int));
     }
 }
+TEST_CASE ("convert typelist to tuple") {
+    GIVEN ("A type_list with some types") {
+        using TL = type_list <int, string, int, char>;
+        REQUIRE (SAME_TYPE (TL::iter::next::iter::leading::type, int));
+    }
+    GIVEN ("A non-starting typelist index") {
+        using TL = type_list <int, string, int, char>;
+        REQUIRE (is_same_v <TL::iter::next::tuple, tuple <string, int, char>>);
+    }
+}
 }
 
 

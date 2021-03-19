@@ -11,8 +11,8 @@ struct _type_list <Head, Before, I, First, Rest...> {
     #define SELF _type_list <Head, Before, I, First, Rest...>
     #define NEXT _type_list <conditional_t <is_same_v <Head, null>, SELF, Head>, SELF, I + 1, Rest...>
     using type          = First;
+    using tuple         = tuple <First, Rest...>;
     struct iter {
-        using type_list = SELF;
         using before    = Before;
         using next      = NEXT;
         using first     = conditional_t <is_same_v <Head, null>, SELF, Head>;
@@ -38,7 +38,6 @@ struct _type_list <Head, Before, I, Type> {
     template <int j>
     using at   = conditional_t <j == i, SELF, null>;
     struct iter {
-        using type_list     = SELF;
         using before        = Before;
         using next          = null;
         using first         = conditional_t <is_same_v <Head, null>, SELF, Head>;
