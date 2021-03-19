@@ -1,10 +1,37 @@
 #pragma once
 #include "phore.hpp"
 
+
+
 struct null;
 
 template <class Head, class Before, int, class... types>
 struct _type_list;
+
+template <class... types>
+using type_list = _type_list <null, null, 0, types...>;
+
+
+template <class...>
+struct _type_list_cat;
+
+
+template <class T, class... U>
+struct _type_list <null, null, 0, tuple <T, U...>> : type_list <T, U...> {
+    
+};
+
+template <class T, class... U>
+struct _type_list_cat <T, type_list <U...>> {
+    using type = type_list <T, U...>;
+};
+
+template <class... A, class... B>
+consteval auto cat (type_list <A...>, type_list <B...>) -> decltype (type_list <A..., B...>{})
+{
+    
+}
+
 
 template <class Head, class Before, int I, class First, class... Rest>
 struct _type_list <Head, Before, I, First, Rest...> {
@@ -54,7 +81,8 @@ struct _type_list <Head, Before, I, Type> {
     #undef NEXT
 };
 
-template <class... types>        using type_list = _type_list <null, null, 0, types...>;
+
+
 
 
 

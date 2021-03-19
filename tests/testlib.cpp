@@ -84,6 +84,13 @@ TEST_CASE ("convert typelist to tuple") {
         REQUIRE (is_same_v <TL::iter::next::tuple, tuple <string, int, char>>);
     }
 }
+TEST_CASE ("use tuple as template parameters for type_list") {
+    GIVEN ("A type_list with some types") {
+        using TL = type_list <int, string, int, char>;
+        REQUIRE (is_base_of_v <TL, type_list <tuple <int, string, int, char>>>);
+        REQUIRE (is_same_v <type_list <tuple <int, string, int, char>>::iter::next::type, string>);
+    }
+}
 }
 
 
