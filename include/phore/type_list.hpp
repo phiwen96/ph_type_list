@@ -12,6 +12,8 @@ struct _type_list <Head, Before, I, First, Rest...> {
     #define NEXT _type_list <conditional_t <is_same_v <Head, null>, SELF, Head>, SELF, I + 1, Rest...>
     using type          = First;
     using tuple         = tuple <First, Rest...>;
+    template <template <class...> class T>
+    using change_container = T <First, Rest...>;
     struct iter {
         using before    = Before;
         using next      = NEXT;
@@ -33,10 +35,13 @@ struct _type_list <Head, Before, I, Type> {
     #define SELF _type_list <Head, Before, I, Type>
     #define NEXT null
     using type = Type;
+    using tuple = tuple <Type>;
     inline static constexpr int i = I;
     inline static constexpr int size = I + 1;
     template <int j>
     using at   = conditional_t <j == i, SELF, null>;
+    template <template <class...> class T>
+    using change_container = T <Type>;
     struct iter {
         using before        = Before;
         using next          = null;
