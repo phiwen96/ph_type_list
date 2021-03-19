@@ -16,6 +16,7 @@ struct _type_list <Head, Before, I, First, Rest...> {
         using next      = NEXT;
         using first     = First;
         using last      = typename NEXT::iter::last;
+        using trailing  = next;
     };
     inline static constexpr int i = I;
     inline static constexpr int size = NEXT::size;
@@ -39,13 +40,15 @@ struct _type_list <Head, Before, I, Type> {
         using before        = Before;
         using next          = null;
         using first         = conditional_t <is_same_v <Head, null>, SELF, typename Head::iter::first>;
-        using last          = Type;
+        using last          = SELF;
     };
     #undef SELF
     #undef NEXT
 };
 
 template <class... types>        using type_list = _type_list <null, null, 0, types...>;
+
+
 
 
 
