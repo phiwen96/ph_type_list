@@ -24,7 +24,7 @@ TEST_CASE ( "get last element from a type list with type_list::last", "[type_lis
     GIVEN ( "A type_list with some types" ) {
         using given = type_list <string, int>;
         
-        REQUIRE (is_same_v <given::last, int>);
+        REQUIRE (is_same_v <given::iter::last, int>);
     }
 }
 
@@ -32,7 +32,7 @@ TEST_CASE ( "get first element from a type list with type_list::last", "[type_li
     GIVEN ( "A type_list with some types" ) {
         using given = type_list <string, int>;
         
-        REQUIRE (is_same_v <given::first, string>);
+        REQUIRE (is_same_v <given::iter::first, string>);
     }
 }
 
