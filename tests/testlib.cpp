@@ -54,11 +54,11 @@ TEST_CASE ("get size") {
         REQUIRE (given::size == 2);
     }
 }
-TEST_CASE ("get type at index i") {
+TEST_CASE ("get type_list at index i") {
     GIVEN ("A type_list with some types") {
         using TL = type_list <bool, string, int, char const*, string>;
         SECTION ("get type_element at index") {
-            REQUIRE (is_same_v <TL::type_element_at <0>, bool>);
+            REQUIRE (is_same_v <TL::at<0>::type, bool>);
         }
     }
 }
@@ -71,7 +71,7 @@ TEST_CASE ("get trailing typelist") {
 TEST_CASE ("get leading typelist") {
     GIVEN ("A type_list with some types") {
         using TL = type_list <int, string, int, char>;
-//        REQUIRE (SAME_TYPE (TL::iter::trailing::type, string));
+        REQUIRE (SAME_TYPE (TL::iter::next::iter::leading::type, int));
     }
 }
 }

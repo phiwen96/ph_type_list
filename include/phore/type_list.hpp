@@ -18,11 +18,12 @@ struct _type_list <Head, Before, I, First, Rest...> {
         using first     = First;
         using last      = typename NEXT::iter::last;
         using trailing  = next;
+        using leading   = Before;
     };
     inline static constexpr int i = I;
     inline static constexpr int size = NEXT::size;
     template <int j>
-    using type_element_at = conditional_t <j == i, First, typename NEXT::template type_element_at <j>>;
+    using at = conditional_t <j == i, SELF, typename NEXT::template at <j>>;
     #undef NEXT
     #undef SELF
 };
@@ -35,13 +36,15 @@ struct _type_list <Head, Before, I, Type> {
     inline static constexpr int i = I;
     inline static constexpr int size = I + 1;
     template <int j>
-    using type_element_at   = conditional_t <j == i, type, null>;
+    using at   = conditional_t <j == i, SELF, null>;
     struct iter {
         using type_list     = SELF;
         using before        = Before;
         using next          = null;
         using first         = conditional_t <is_same_v <Head, null>, SELF, typename Head::iter::first>;
         using last          = SELF;
+        using trailing      = null;
+        using leading       = Before;
     };
     #undef SELF
     #undef NEXT
