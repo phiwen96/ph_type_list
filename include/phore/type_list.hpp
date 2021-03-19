@@ -104,8 +104,9 @@ constexpr auto split_type_list (type_list <T...> const& t) -> decltype (auto)
                                               index_sequence <I2...> ind2) -> decltype (auto)
         {
             using TL = type_list <T...>;
-            return type_list <typename TL::template at<I1>::type...> {};
+            return type_list <typename TL::template at <I1>::type..., typename TL::template at <sizeof... (I1) + I2>::type...> {};
         }
+    
         (t, make_index_sequence <i> {}, make_index_sequence <j> {});
 }
 
