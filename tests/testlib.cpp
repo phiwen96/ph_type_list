@@ -121,19 +121,34 @@ TEST_CASE ("pop typelist element") {
 }
 //TEMPLATE_PRODUCT_TEST_CASE_METHOD_SIG(Template_Fixture_2, "A", "[", ((typename T, size_t S), T, S),(std::array, Template_Foo_2), ((int,2), (float,6)))
 
-TEST_CASE ("no existance for wrong index with type_list::iter::at")
+TEST_CASE ("testing type_list::iter::at")
 {
-    GIVEN("typelist <int, char, string>" )
+    #define TYPE_LIST_PARAMS \
+        int, \
+        char, \
+        string
+    
+    #define TYPE_LIST \
+        type_list <TYPE_LIST_PARAMS>
+    
+    SECTION ("should not work")
     {
-        SECTION ("call with -1")
+        GIVEN (BOOST_PP_STRINGIZE (TYPE_LIST))
         {
-            REQUIRE (concept_type_list_at<-1, int> == 0);
-        }
-        SECTION ("call with 3")
-        {
-            REQUIRE (concept_type_list_at<3, int> == 0);
+            SECTION ("call with -1")
+            {
+                REQUIRE (concept_type_list_at<-1, TYPE_LIST_PARAMS> == 0);
+            }
+            SECTION ("call with 3")
+            {
+                REQUIRE (concept_type_list_at <TYPE_LIST::size, TYPE_LIST_PARAMS> == 0);
+            }
         }
     }
+    
+    #undef TYPE_LIST
+    #undef TYPE_LIST_PARAMS
+    
     
     
 }
