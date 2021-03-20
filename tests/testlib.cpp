@@ -14,10 +14,11 @@ struct Math
 };
 
 
-TEST_CASE () {
-    
-}
 
+template <int i, class... T>
+concept concept_type_list_at = requires () {
+    typename type_list<T...>::iter::template at<i>::type;
+};
 
 
 
@@ -118,6 +119,25 @@ TEST_CASE ("pop typelist element") {
         REQUIRE (is_same_v <invoke_result_t <decltype (pop_type_list <2, int, char, pop_type>), type_list <int, char, pop_type>>, type_list <int, char>>);
     }
 }
+//TEMPLATE_PRODUCT_TEST_CASE_METHOD_SIG(Template_Fixture_2, "A", "[", ((typename T, size_t S), T, S),(std::array, Template_Foo_2), ((int,2), (float,6)))
+
+TEST_CASE ("no existance for wrong index with type_list::iter::at")
+{
+    GIVEN("typelist <int, char, string>" )
+    {
+        SECTION ("call with -1")
+        {
+            REQUIRE (concept_type_list_at<-1, int> == 0);
+        }
+        SECTION ("call with 3")
+        {
+            REQUIRE (concept_type_list_at<3, int> == 0);
+        }
+    }
+    
+    
+}
+
 }
 
 
@@ -153,12 +173,12 @@ int main( int argc, char* argv[] ) {
 //    cout << type_list <int, char, bool> {} << endl;
 //    cout << pop_type_list <2> (type_list <int, char, bool> {}) << endl;
 
-//    cout << is_invocable <decltype (type_list <int>::iter::at<0>{})>::value << endl;
-  int result = Catch::Session().run( argc, argv );
+//    cout << concept_type_list_at<-1, int, char> << endl;
+    int result = Catch::Session().run( argc, argv );
 
   // global clean-up...
 
-  return result;
+    return result;
 }
 
 
