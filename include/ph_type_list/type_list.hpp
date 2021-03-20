@@ -1,5 +1,5 @@
 #pragma once
-#include "phore.hpp"
+using namespace std;
 
 
 

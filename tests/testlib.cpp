@@ -66,19 +66,19 @@ TEST_CASE ("get type_list at index i") {
 TEST_CASE ("get trailing typelist") {
     GIVEN ("A type_list with some types") {
         using TL = type_list <int, string, int, char>;
-        REQUIRE (SAME_TYPE (TL::iter::trailing::type, string));
+        REQUIRE (is_same_v<TL::iter::trailing::type, string>);
     }
 }
 TEST_CASE ("get leading typelist") {
     GIVEN ("A type_list with some types") {
         using TL = type_list <int, string, int, char>;
-        REQUIRE (SAME_TYPE (TL::iter::next::iter::leading::type, int));
+        REQUIRE (is_same_v<TL::iter::next::iter::leading::type, int>);
     }
 }
 TEST_CASE ("convert typelist to tuple") {
     GIVEN ("A type_list with some types") {
         using TL = type_list <int, string, int, char>;
-        REQUIRE (SAME_TYPE (TL::iter::next::iter::leading::type, int));
+        REQUIRE (is_same_v<TL::iter::next::iter::leading::type, int>);
     }
     GIVEN ("A non-starting typelist index") {
         using TL = type_list <int, string, int, char>;

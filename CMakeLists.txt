@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.19.4)
 
 project (
-	phore
+	ph_type_list
 	VERSION 1.0
 	DESCRIPTION "Very nice project"
 	LANGUAGES CXX

@@ -3,27 +3,27 @@
 file(GLOB_RECURSE HEADER_LIST "${PROJECT_SOURCE_DIR}/include/*.hpp")
 file(GLOB SOURCE_LIST ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
-add_library (phore
+add_library (ph_type_list
 	${SOURCE_LIST}  ${HEADER_LIST} 
 )
 
 
 
-ph_precompile (TARGET phore PUBLIC PCH ${std_pch} ${boost_pch})
+ph_precompile (TARGET ph_type_list PUBLIC PCH ${std_pch} ${boost_pch})
 
-add_library (ph::phore ALIAS phore)
-target_link_libraries (phore PRIVATE ${Boost_LIBRARIES})
-target_include_directories (phore PUBLIC ${PROJECT_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
+add_library (ph::type_list ALIAS ph_type_list)
+target_link_libraries (ph_type_list PRIVATE ${Boost_LIBRARIES})
+target_include_directories (ph_type_list PUBLIC ${PROJECT_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
 
-target_compile_features (phore PUBLIC cxx_std_20)
+target_compile_features (ph_type_list PUBLIC cxx_std_20)
 
 
-target_include_directories(phore PRIVATE
-    $<BUILD_INTERFACE:${phore_SOURCE_DIR}/include/phore>
-    $<INSTALL_INTERFACE:include/phore>
+target_include_directories(ph_type_list PRIVATE
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/ph_type_list>
+    $<INSTALL_INTERFACE:include/ph_type_list>
 )
 
-target_include_directories(phore PUBLIC
-    $<BUILD_INTERFACE:${phore_SOURCE_DIR}/include>
+target_include_directories(ph_type_list PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
