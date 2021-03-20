@@ -53,6 +53,7 @@ struct _type_list <Head, Before, I, First, Rest...> {
     inline static constexpr int size = NEXT::size;
     template <int j>
     using at = conditional_t <j == i, SELF, typename NEXT::template at <j>>;
+    
     #undef NEXT
     #undef SELF
 };
@@ -77,9 +78,26 @@ struct _type_list <Head, Before, I, Type> {
         using trailing      = null;
         using leading       = Before;
     };
+    friend ostream& operator<< (ostream& os, _type_list const& s) {
+        os << typeid (type).name () << " ";
+        return os;
+    }
     #undef SELF
     #undef NEXT
 };
+
+template <class T, class... U>
+ostream& operator<< (ostream& os, type_list <T, U...> const& s) {
+    os << typeid (T).name () << " ";
+    os << type_list <U...> {} << endl;
+    return os;
+}
+
+template <class T>
+ostream& operator<< (ostream& os, type_list <T> const& s) {
+    os << typeid (T).name () << " ";
+    return os;
+}
 
 
 template <class... T>
@@ -109,6 +127,25 @@ constexpr auto split_type_list (type_list <T...> const& t) -> decltype (auto)
     
         (t, make_index_sequence <i> {}, make_index_sequence <j> {});
 }
+
+template <size_t splitIndex, class... T, size_t N = sizeof... (T)>
+constexpr auto pop_type_list (type_list <T...> const& t) -> decltype (auto)
+{
+      constexpr size_t i = splitIndex;
+      constexpr size_t j = N - splitIndex;
+    
+      return [] <size_t... I1, size_t... I2> (type_list <T...> const& t,
+                                              index_sequence <I1...> ind1,
+                                              index_sequence <I2...> ind2) -> decltype (auto)
+        {
+            using TL = type_list <T...>;
+            return type_list <typename TL::template at <I1>::type..., typename TL::template at <sizeof... (I1) + I2>::type...> {};
+        }
+    
+        (t, make_index_sequence <i> {}, make_index_sequence <j + 1> {});
+}
+
+
 
 
 

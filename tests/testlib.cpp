@@ -100,13 +100,23 @@ TEST_CASE ("use typelist as template parameter for std::tuple") {
 TEST_CASE ("split typelist into 2 typelists") {
     GIVEN ("A type_list with some types") {
         
-#define TMP_PARAMS_LHS int, string, char
-#define TMP_PARAMS_RHS int, char
+        #define TMP_PARAMS_LHS int, string, char
+        #define TMP_PARAMS_RHS int, char
 
         REQUIRE (is_same_v <invoke_result_t <decltype (split_type_list <3, TMP_PARAMS_LHS, TMP_PARAMS_RHS>), type_list <TMP_PARAMS_LHS, TMP_PARAMS_RHS>>, type_list <TMP_PARAMS_LHS, TMP_PARAMS_RHS>>);
-        
-#undef TMP_PARAMS_CALL
-#undef TMP_PARAMS_RESULT
+            
+        #undef TMP_PARAMS_CALL
+        #undef TMP_PARAMS_RESULT
+    }
+}
+TEST_CASE ("pop typelist element") {
+    GIVEN ("A type_list with some types") {
+        using pop_type = char;
+
+
+        REQUIRE (is_same_v <invoke_result_t <decltype (split_type_list <0, int, pop_type, char>), type_list <int, pop_type, char>>, type_list <int, char>>);
+        cout << type_list <int, char, string> {} << endl;
+        #undef POP_TYPE
     }
 }
 }
