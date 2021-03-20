@@ -120,51 +120,38 @@ constexpr auto split_type_list (type_list <T...> const& t) -> decltype (auto)
 
 
 
-template <size_t splitIndex, class... T, size_t N = sizeof... (T)>
-constexpr auto pop_type_list (type_list <T...> const& t) -> decltype (auto)
-{
-      constexpr size_t i = splitIndex;
-      constexpr size_t j = N - splitIndex;
-    
-      return [] <size_t... I1, size_t... I2> (type_list <T...> const& t,
-                                              index_sequence <I1...> ind1,
-                                              index_sequence <I2...> ind2) -> decltype (auto)
-        {
-            using TL = type_list <T...>;
-            return type_list <typename TL::template at <I1>::type..., typename TL::template at <sizeof... (I1) + I2>::type...> {};
-        }
-    
-        (t, make_index_sequence <i> {}, make_index_sequence <j> {});
-}
+
 
 template <int curr, int max, int I, class... A>
-auto poppisImpl (type_list <A...>, type_list <>)
+constexpr auto pop_type_list_impl (type_list <A...>, type_list <>) -> decltype (auto)
 {
     return type_list <A...> {};
 }
 
 
 template <int curr, int max, int I, class... A, class B, class... C>
-auto poppisImpl (type_list <A...>, type_list <B, C...>)
+constexpr auto pop_type_list_impl (type_list <A...>, type_list <B, C...>) -> decltype (auto)
 {
     if constexpr (curr == max)
     {
         return type_list <A...> {};
-    }
-    else if constexpr (curr == I)
+        
+    } else if constexpr (curr == I)
     {
-        return poppisImpl <curr + 1, max, I> (type_list <A...> {}, type_list <C...> {});
+        return pop_type_list_impl <curr + 1, max, I> (type_list <A...> {}, type_list <C...> {});
+        
     } else
     {
-        return poppisImpl <curr + 1, max, I> (type_list <A..., B> {}, type_list <C...> {});
+        return pop_type_list_impl <curr + 1, max, I> (type_list <A..., B> {}, type_list <C...> {});
     }
 }
 
 
 template <int i, class... T>
-auto poppis (type_list <T...>)
+requires (i >= 0 and i < sizeof... (T))
+constexpr auto pop_type_list (type_list <T...>) -> decltype (auto)
 {
-    return poppisImpl <0, sizeof... (T), i> (type_list <> {}, type_list <T...> {});
+    return pop_type_list_impl <0, sizeof... (T), i> (type_list <> {}, type_list <T...> {});
 }
 
 
