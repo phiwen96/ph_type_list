@@ -81,6 +81,7 @@ struct _type_list <Head, Before, I, First, Rest...> {
     using tuple         = tuple <First, Rest...>;
     template <template <class...> class T>
     using change_container = T <First, Rest...>;
+    inline static constexpr int size = NEXT::size;
     struct iter {
         inline static constexpr int i = I;
         using before    = Before;
@@ -91,9 +92,9 @@ struct _type_list <Head, Before, I, First, Rest...> {
         using leading   = Before;
         using pop       = decltype (pop_type_list <i> (first {}));
         template <int j>
+        requires (j >= 0 and j < size)
         using at = conditional_t <j == i, SELF, typename NEXT::iter::template at <j>>;
     };
-    inline static constexpr int size = NEXT::size;
     
     #undef NEXT
     #undef SELF
@@ -117,6 +118,7 @@ struct _type_list <Head, Before, I, Type> {
         using trailing      = null;
         using leading       = Before;
         template <int j>
+        requires (j >= 0 and j < size)
         using at   = conditional_t <j == i, SELF, null>;
     };
     #undef SELF

@@ -121,27 +121,43 @@ TEST_CASE ("pop typelist element") {
 }
 //TEMPLATE_PRODUCT_TEST_CASE_METHOD_SIG(Template_Fixture_2, "A", "[", ((typename T, size_t S), T, S),(std::array, Template_Foo_2), ((int,2), (float,6)))
 
-TEST_CASE ("testing type_list::iter::at")
+TEST_CASE ("Testing type_list::iter::at")
 {
     #define TYPE_LIST_PARAMS \
         int, \
         char, \
-        string
+        string, \
+        char const*
     
     #define TYPE_LIST \
         type_list <TYPE_LIST_PARAMS>
     
-    SECTION ("should not work")
+    SECTION ("Should not work")
     {
         GIVEN (BOOST_PP_STRINGIZE (TYPE_LIST))
         {
             SECTION ("call with -1")
             {
-                REQUIRE (concept_type_list_at<-1, TYPE_LIST_PARAMS> == 0);
+                REQUIRE (concept_type_list_at <-1, TYPE_LIST_PARAMS> == 0);
             }
             SECTION ("call with 3")
             {
                 REQUIRE (concept_type_list_at <TYPE_LIST::size, TYPE_LIST_PARAMS> == 0);
+            }
+        }
+    }
+    
+    SECTION ("Should work")
+    {
+        GIVEN (BOOST_PP_STRINGIZE (TYPE_LIST))
+        {
+            SECTION ("call with 0")
+            {
+                REQUIRE (concept_type_list_at <0, TYPE_LIST_PARAMS> == 1);
+            }
+            SECTION ("call with elem = size-1")
+            {
+                REQUIRE (concept_type_list_at <TYPE_LIST::size - 1, TYPE_LIST_PARAMS> == 1);
             }
         }
     }
