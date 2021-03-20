@@ -117,6 +117,7 @@ TEST_CASE ("pop typelist element") {
         REQUIRE (is_same_v <invoke_result_t <decltype (pop_type_list <0, pop_type, int, char>), type_list <pop_type, int, char>>, type_list <int, char>>);
         REQUIRE (is_same_v <invoke_result_t <decltype (pop_type_list <1, int, pop_type, char>), type_list <int, pop_type, char>>, type_list <int, char>>);
         REQUIRE (is_same_v <invoke_result_t <decltype (pop_type_list <2, int, char, pop_type>), type_list <int, char, pop_type>>, type_list <int, char>>);
+        REQUIRE (is_same_v <invoke_result_t <decltype (pop_type_list <0, pop_type>), type_list <pop_type>>, type_list <>>);
     }
 }
 //TEMPLATE_PRODUCT_TEST_CASE_METHOD_SIG(Template_Fixture_2, "A", "[", ((typename T, size_t S), T, S),(std::array, Template_Foo_2), ((int,2), (float,6)))
