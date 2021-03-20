@@ -115,7 +115,6 @@ TEST_CASE ("pop typelist element") {
 
 
         REQUIRE (is_same_v <invoke_result_t <decltype (split_type_list <0, int, pop_type, char>), type_list <int, pop_type, char>>, type_list <int, char>>);
-        cout << type_list <int, char, string> {} << endl;
         #undef POP_TYPE
     }
 }
@@ -149,7 +148,18 @@ TEST_CASE ("pop typelist element") {
 
 
 
+int main( int argc, char* argv[] ) {
+  // global setup...
+    cout << type_list <int, char, bool> {} << endl;
+    cout << pop_type_list <1> (type_list <int, char, bool> {}) << endl;
 
+
+  int result = Catch::Session().run( argc, argv );
+
+  // global clean-up...
+
+  return result;
+}
 
 
 
