@@ -6,7 +6,10 @@
 struct null;
 
 template <class Head, class Before, int, class... types>
-struct _type_list;
+struct _type_list
+{
+    
+};
 
 template <class... types>
 using type_list = _type_list <null, null, 0, types...>;
@@ -134,7 +137,35 @@ constexpr auto pop_type_list (type_list <T...> const& t) -> decltype (auto)
         (t, make_index_sequence <i> {}, make_index_sequence <j> {});
 }
 
+template <int curr, int max, int I, class... A>
+auto poppisImpl (type_list <A...>, type_list <>)
+{
+    return type_list <A...> {};
+}
 
+
+template <int curr, int max, int I, class... A, class B, class... C>
+auto poppisImpl (type_list <A...>, type_list <B, C...>)
+{
+    if constexpr (curr == max)
+    {
+        return type_list <A...> {};
+    }
+    else if constexpr (curr == I)
+    {
+        return poppisImpl <curr + 1, max, I> (type_list <A...> {}, type_list <C...> {});
+    } else
+    {
+        return poppisImpl <curr + 1, max, I> (type_list <A..., B> {}, type_list <C...> {});
+    }
+}
+
+
+template <int i, class... T>
+auto poppis (type_list <T...>)
+{
+    return poppisImpl <0, sizeof... (T), i> (type_list <> {}, type_list <T...> {});
+}
 
 
 
@@ -170,3 +201,21 @@ ostream& operator<< (ostream& os, type_list <T, U...> const& s) {
     print_type_list (os, s);
     return os;
 }
+
+
+
+
+
+
+//template <std::size_t... Ns>
+//struct index_sequence {};
+//
+//template <std::size_t N, std::size_t... Is>
+//auto make_index_sequence_impl() {
+//    // only one branch is considered. The other may be ill-formed
+//    if constexpr (N == 0) return index_sequence<Is...>(); // end case
+//    else return make_index_sequence_impl<N-1, N-1, Is...>(); // recursion
+//}
+//
+//template <std::size_t N>
+//using make_index_sequence = std::decay_t<decltype(make_index_sequence_impl<N>())>;

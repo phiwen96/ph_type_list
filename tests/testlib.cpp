@@ -151,7 +151,7 @@ TEST_CASE ("pop typelist element") {
 int main( int argc, char* argv[] ) {
   // global setup...
     cout << type_list <int, char, bool> {} << endl;
-    cout << pop_type_list <1> (type_list <int, char, bool> {}) << endl;
+    cout << poppis <0> (type_list <int, char, bool> {}) << endl;
 
 
   int result = Catch::Session().run( argc, argv );
