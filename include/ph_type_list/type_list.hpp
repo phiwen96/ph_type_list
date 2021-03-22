@@ -73,6 +73,37 @@ constexpr auto pop_type_list (type_list <T...>) -> decltype (auto)
 }
 
 
+
+
+template <int curr, int max, int I, class A, class... B, class C, class... D>
+constexpr auto push_type_list_impl (type_list <B...> read, type_list <C, D...> reading) -> decltype (auto)
+{
+//    if constexpr (curr == max)
+//    {
+//        return type_list <A...> {};
+//
+//    }
+    if constexpr (curr == I)
+    {
+        return type_list <B..., A, C, D...> {};//push_type_list_impl <curr + 1, max, I, A> (type_list <A, B, C...> {});
+        
+    }
+//    else
+//    {
+        return push_type_list_impl <curr + 1, max, I, A> (type_list <B..., C> {}, type_list <D...> {});
+//    }
+}
+
+template <int i, class T, class... U>
+requires (i >= 0 and i < sizeof... (U))
+constexpr auto push_type_list (type_list <U...>) -> decltype (auto)
+{
+
+    return push_type_list_impl <0, T, sizeof... (U), i> (type_list <> {}, type_list <U...> {});
+
+}
+
+
 template <class Head, class Before, int I, class First, class... Rest>
 struct _type_list <Head, Before, I, First, Rest...> {
     #define SELF _type_list <Head, Before, I, First, Rest...>
@@ -157,6 +188,28 @@ constexpr auto split_type_list (type_list <T...> const& t) -> decltype (auto)
     
         (t, make_index_sequence <i> {}, make_index_sequence <j> {});
 }
+
+
+
+
+template <size_t insertIndex, class... T, size_t N = sizeof... (T)>
+constexpr auto insert_type_list (type_list <T...> const& t) -> decltype (auto)
+{
+      constexpr size_t i = insertIndex;
+      constexpr size_t j = N - insertIndex;
+    
+      return [] <size_t... I1, size_t... I2> (type_list <T...> const& t,
+                                              index_sequence <I1...> ind1,
+                                              index_sequence <I2...> ind2) -> decltype (auto)
+        {
+            using TL = type_list <T...>;
+            return type_list <typename TL::iter::template at <I1>::type..., typename TL::iter::template at <sizeof... (I1) + I2>::type...> {};
+        }
+    
+        (t, make_index_sequence <i> {}, make_index_sequence <j> {});
+}
+
+
 
 
 

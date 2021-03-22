@@ -25,6 +25,14 @@ concept concept_type_list_at = requires () {
 
 namespace test_type_list
 {
+TEST_CASE ("insert type")
+{
+    GIVEN ( "A type_list with some types" ) {
+        using given = type_list <string, int>;
+        REQUIRE (is_same_v <given::iter::next::iter::first::type, string>);
+    }
+}
+
 TEST_CASE ( "get first element", "[type_list]" ) {
     GIVEN ( "A type_list with some types" ) {
         using given = type_list <string, int>;
@@ -173,19 +181,6 @@ TEST_CASE ("Testing type_list::iter::at")
 }
 
 
-//int main ()
-//{
-//
-//    static_assert(is_same_v <type_list <string, int>::last, int>, "fel");
-//
-//
-//
-//
-//
-//    return 0;
-//}
-
-
 
 
 
@@ -201,14 +196,14 @@ TEST_CASE ("Testing type_list::iter::at")
 
 
 int main( int argc, char* argv[] ) {
-  // global setup...
-//    cout << type_list <int, char, bool> {} << endl;
-//    cout << pop_type_list <2> (type_list <int, char, bool> {}) << endl;
-
-//    cout << concept_type_list_at<-1, int, char> << endl;
+    
+    value_list v (3, "hej");
+    
+    cout << v.size << endl;
+    cout << v.get <0> () << endl;
+    
     int result = Catch::Session().run( argc, argv );
 
-  // global clean-up...
 
     return result;
 }
