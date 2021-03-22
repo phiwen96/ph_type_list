@@ -75,7 +75,7 @@ constexpr auto pop_type_list (type_list <T...>) -> decltype (auto)
 
 
 
-template <int curr, int max, int I, class A, class... B, class C, class... D>
+template <int curr, int max, int i, class A, class... B, class C, class... D>
 constexpr auto push_type_list_impl (type_list <B...> read, type_list <C, D...> reading) -> decltype (auto)
 {
 //    if constexpr (curr == max)
@@ -83,15 +83,15 @@ constexpr auto push_type_list_impl (type_list <B...> read, type_list <C, D...> r
 //        return type_list <A...> {};
 //
 //    }
-    if constexpr (curr == I)
+    if constexpr (curr == i)
     {
         return type_list <B..., A, C, D...> {};//push_type_list_impl <curr + 1, max, I, A> (type_list <A, B, C...> {});
         
     }
-//    else
-//    {
-        return push_type_list_impl <curr + 1, max, I, A> (type_list <B..., C> {}, type_list <D...> {});
-//    }
+    else
+    {
+        return push_type_list_impl <curr + 1, max, i, A> (type_list <B..., C> {}, type_list <D...> {});
+    }
 }
 
 template <int i, class T, class... U>
@@ -99,7 +99,7 @@ requires (i >= 0 and i < sizeof... (U))
 constexpr auto push_type_list (type_list <U...>) -> decltype (auto)
 {
 
-    return push_type_list_impl <0, T, sizeof... (U), i> (type_list <> {}, type_list <U...> {});
+    return push_type_list_impl <0, sizeof... (U), i, T> (type_list <> {}, type_list <U...> {});
 
 }
 
@@ -122,6 +122,8 @@ struct _type_list <Head, Before, I, First, Rest...> {
         using trailing  = next;
         using leading   = Before;
         using pop       = decltype (pop_type_list <i> (first {}));
+        template <class X>
+        using push       = decltype (push_type_list <i, X> (first {}));
         template <int j>
         requires (j >= 0 and j < size)
         using at = conditional_t <j == i, SELF, typename NEXT::iter::template at <j>>;

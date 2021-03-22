@@ -29,7 +29,7 @@ TEST_CASE ("insert type")
 {
     GIVEN ( "A type_list with some types" ) {
         using given = type_list <string, int>;
-        REQUIRE (is_same_v <given::iter::next::iter::first::type, string>);
+//        REQUIRE (is_same_v <given::iter::next::iter::push<char>::first::type, type_list <char, string, int>>);
     }
 }
 
@@ -201,6 +201,8 @@ int main( int argc, char* argv[] ) {
     
     cout << v.size << endl;
     cout << v.get <0> () << endl;
+    cout << push_type_list<1, double>(type_list<int, char, string, double> {}) << endl;
+//    cout << typename type_list<int, char>::iter::template push<char>::first {} << endl;
     
     int result = Catch::Session().run( argc, argv );
 
