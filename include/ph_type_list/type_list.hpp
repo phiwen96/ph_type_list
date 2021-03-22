@@ -153,6 +153,8 @@ struct _type_list <Head, Before, I, Type> {
         template <int j>
         requires (j >= 0 and j < size)
         using at   = conditional_t <j == i, SELF, null>;
+        template <class X>
+        using push       = decltype (push_type_list <i, X> (first {}));
     };
     #undef SELF
     #undef NEXT

@@ -203,6 +203,9 @@ int main( int argc, char* argv[] ) {
     cout << v.get <0> () << endl;
     cout << push_type_list<1, double>(type_list<int, char, string, double> {}) << endl;
     static_assert (is_same_v<decltype (push_type_list<1, double>(type_list<int, char, string, double> {})), type_list<int, double, char, string, double>>, "");
+    
+    using type = type_list<int, char, string, double>::iter::next::iter::push<double>::iter::first;
+    static_assert (is_same_v<type, type_list<int, double, char, string, double>>, "");
 //    cout << typename type_list<int, char>::iter::template push<char>::first {} << endl;
     
     int result = Catch::Session().run( argc, argv );
