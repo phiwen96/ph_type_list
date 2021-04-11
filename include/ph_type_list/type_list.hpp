@@ -12,7 +12,10 @@ struct _type_list
 };
 
 template <class... types>
-using type_list = _type_list <null, null, 0, types...>;
+using type_list_t = _type_list <null, null, 0, types...>;
+
+template <class... T>
+constexpr type_list_t <T...> type_list;
 
 
 template <class...>
@@ -20,55 +23,58 @@ struct _type_list_cat;
 
 
 template <class T, class... U>
-struct _type_list <null, null, 0, tuple <T, U...>> : type_list <T, U...> {
+struct _type_list <null, null, 0, tuple <T, U...>> : type_list_t <T, U...> {
     
 };
 
+
+
+
 template <class T, class... U>
-struct _type_list_cat <T, type_list <U...>> {
-    using type = type_list <T, U...>;
+struct _type_list_cat <T, type_list_t <U...>> {
+    using type = type_list_t <T, U...>;
 };
 
 template <class... A, class... B>
-consteval auto cat (type_list <A...>, type_list <B...>) -> decltype (type_list <A..., B...>{})
+consteval auto cat (type_list_t <A...>, type_list_t <B...>) -> decltype (type_list_t <A..., B...>{})
 {
     
 }
 
 
 template <int curr, int max, int I, class... A>
-constexpr auto pop_type_list_impl (type_list <A...>, type_list <>) -> decltype (auto)
+constexpr auto pop_type_list_impl (type_list_t <A...>, type_list_t <>) -> decltype (auto)
 {
-    return type_list <A...> {};
+    return type_list_t <A...> {};
 }
 
 
 
 
 template <int curr, int max, int I, class... A, class B, class... C>
-constexpr auto pop_type_list_impl (type_list <A...>, type_list <B, C...>) -> decltype (auto)
+constexpr auto pop_type_list_impl (type_list_t <A...>, type_list_t <B, C...>) -> decltype (auto)
 {
     if constexpr (curr == max)
     {
-        return type_list <A...> {};
+        return type_list_t <A...> {};
         
     } else if constexpr (curr == I)
     {
-        return pop_type_list_impl <curr + 1, max, I> (type_list <A...> {}, type_list <C...> {});
+        return pop_type_list_impl <curr + 1, max, I> (type_list_t <A...> {}, type_list_t <C...> {});
         
     } else
     {
-        return pop_type_list_impl <curr + 1, max, I> (type_list <A..., B> {}, type_list <C...> {});
+        return pop_type_list_impl <curr + 1, max, I> (type_list_t <A..., B> {}, type_list_t <C...> {});
     }
 }
 
 
 template <int i, class... T>
 requires (i >= 0 and i < sizeof... (T))
-constexpr auto pop_type_list (type_list <T...>) -> decltype (auto)
+constexpr auto pop_type_list (type_list_t <T...>) -> decltype (auto)
 {
 
-    return pop_type_list_impl <0, sizeof... (T), i> (type_list <> {}, type_list <T...> {});
+    return pop_type_list_impl <0, sizeof... (T), i> (type_list_t <> {}, type_list_t <T...> {});
 
 }
 
@@ -76,7 +82,7 @@ constexpr auto pop_type_list (type_list <T...>) -> decltype (auto)
 
 
 template <int curr, int max, int i, class A, class... B, class C, class... D>
-constexpr auto push_type_list_impl (type_list <B...> read, type_list <C, D...> reading) -> decltype (auto)
+constexpr auto push_type_list_impl (type_list_t <B...> read, type_list_t <C, D...> reading) -> decltype (auto)
 {
 //    if constexpr (curr == max)
 //    {
@@ -85,21 +91,21 @@ constexpr auto push_type_list_impl (type_list <B...> read, type_list <C, D...> r
 //    }
     if constexpr (curr == i)
     {
-        return type_list <B..., A, C, D...> {};//push_type_list_impl <curr + 1, max, I, A> (type_list <A, B, C...> {});
+        return type_list_t <B..., A, C, D...> {};//push_type_list_impl <curr + 1, max, I, A> (type_list <A, B, C...> {});
         
     }
     else
     {
-        return push_type_list_impl <curr + 1, max, i, A> (type_list <B..., C> {}, type_list <D...> {});
+        return push_type_list_impl <curr + 1, max, i, A> (type_list_t <B..., C> {}, type_list_t <D...> {});
     }
 }
 
 template <int i, class T, class... U>
 requires (i >= 0 and i < sizeof... (U))
-constexpr auto push_type_list (type_list <U...>) -> decltype (auto)
+constexpr auto push_type_list (type_list_t <U...>) -> decltype (auto)
 {
 
-    return push_type_list_impl <0, sizeof... (U), i, T> (type_list <> {}, type_list <U...> {});
+    return push_type_list_impl <0, sizeof... (U), i, T> (type_list_t <> {}, type_list_t <U...> {});
 
 }
 
@@ -128,6 +134,28 @@ struct _type_list <Head, Before, I, First, Rest...> {
         requires (j >= 0 and j < size)
         using at = conditional_t <j == i, SELF, typename NEXT::iter::template at <j>>;
     };
+    template <typename X>
+    inline static constexpr bool _has ()
+    {
+        if constexpr (is_same_v <X, type>)
+            return true;
+        return  NEXT::template _has <X> ();
+    }
+    template <typename X>
+    inline static constexpr bool has = _has <X> ();
+    
+    template <typename... X>
+    inline static constexpr bool has_variant (variant <X...> const& v)
+    {
+        if (visit ([]<typename Y>(Y const&)constexpr -> bool{return is_same_v <Y, type>;}, v))
+            return true;
+//        if constexpr (is_same_v <X, type>)
+//            return true;
+        else
+            return  NEXT::template has_variant <X...> (v);
+    }
+    
+    
     
     #undef NEXT
     #undef SELF
@@ -156,6 +184,22 @@ struct _type_list <Head, Before, I, Type> {
         template <class X>
         using push       = decltype (push_type_list <i, X> (first {}));
     };
+    template <typename X>
+    inline static constexpr bool _has ()
+    {
+        if constexpr (is_same_v <X, type>)
+            return true;
+        return false;
+    }
+    template <typename... X>
+    inline static constexpr bool has_variant (variant <X...> const& v)
+    {
+        if (visit ([]<typename Y>(Y const&){return is_same_v <Y, type>;}, v))
+            return true;
+//        if constexpr (is_same_v <X, type>)
+//            return true;
+        return  false;
+    }
     #undef SELF
     #undef NEXT
 };
@@ -166,7 +210,7 @@ struct _type_list <Head, Before, I, Type> {
 
 
 template <class... T>
-struct tuple <type_list <T...>> : std::tuple <T...>
+struct tuple <type_list_t <T...>> : std::tuple <T...>
 {
     
 };
@@ -177,17 +221,17 @@ struct tuple <type_list <T...>> : std::tuple <T...>
 
 
 template <size_t splitIndex, class... T, size_t N = sizeof... (T)>
-constexpr auto split_type_list (type_list <T...> const& t) -> decltype (auto)
+constexpr auto split_type_list (type_list_t <T...> const& t) -> decltype (auto)
 {
       constexpr size_t i = splitIndex;
       constexpr size_t j = N - splitIndex;
     
-      return [] <size_t... I1, size_t... I2> (type_list <T...> const& t,
+      return [] <size_t... I1, size_t... I2> (type_list_t <T...> const& t,
                                               index_sequence <I1...> ind1,
                                               index_sequence <I2...> ind2) -> decltype (auto)
         {
-            using TL = type_list <T...>;
-            return type_list <typename TL::iter::template at <I1>::type..., typename TL::iter::template at <sizeof... (I1) + I2>::type...> {};
+            using TL = type_list_t <T...>;
+            return type_list_t <typename TL::iter::template at <I1>::type..., typename TL::iter::template at <sizeof... (I1) + I2>::type...> {};
         }
     
         (t, make_index_sequence <i> {}, make_index_sequence <j> {});
@@ -197,17 +241,17 @@ constexpr auto split_type_list (type_list <T...> const& t) -> decltype (auto)
 
 
 template <size_t insertIndex, class... T, size_t N = sizeof... (T)>
-constexpr auto insert_type_list (type_list <T...> const& t) -> decltype (auto)
+constexpr auto insert_type_list (type_list_t <T...> const& t) -> decltype (auto)
 {
       constexpr size_t i = insertIndex;
       constexpr size_t j = N - insertIndex;
     
-      return [] <size_t... I1, size_t... I2> (type_list <T...> const& t,
+      return [] <size_t... I1, size_t... I2> (type_list_t <T...> const& t,
                                               index_sequence <I1...> ind1,
                                               index_sequence <I2...> ind2) -> decltype (auto)
         {
-            using TL = type_list <T...>;
-            return type_list <typename TL::iter::template at <I1>::type..., typename TL::iter::template at <sizeof... (I1) + I2>::type...> {};
+            using TL = type_list_t <T...>;
+            return type_list_t <typename TL::iter::template at <I1>::type..., typename TL::iter::template at <sizeof... (I1) + I2>::type...> {};
         }
     
         (t, make_index_sequence <i> {}, make_index_sequence <j> {});
@@ -233,14 +277,14 @@ constexpr auto insert_type_list (type_list <T...> const& t) -> decltype (auto)
 
 
 template <class T, class U, class... V>
-void print_type_list (ostream& os, type_list <T, U, V...>)
+void print_type_list (ostream& os, type_list_t <T, U, V...>)
 {
     os << typeid (T).name () << ", ";
-    print_type_list (os, type_list <U, V...> {});
+    print_type_list (os, type_list_t <U, V...> {});
 }
 
 template <class T>
-void print_type_list (ostream& os, type_list <T>)
+void print_type_list (ostream& os, type_list_t <T>)
 {
     os << typeid (T).name ();
     os << ">";
@@ -249,7 +293,7 @@ void print_type_list (ostream& os, type_list <T>)
 
 
 template <class T, class... U>
-ostream& operator<< (ostream& os, type_list <T, U...> const& s) {
+ostream& operator<< (ostream& os, type_list_t <T, U...> const& s) {
     os << "type_list <";
     print_type_list (os, s);
     return os;
