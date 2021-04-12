@@ -155,6 +155,17 @@ struct _type_list <Head, Before, I, First, Rest...> {
             return  NEXT::template has_variant <X...> (v);
     }
     
+    template <typename... X>
+    inline static constexpr bool has_any (any const& a)
+    {
+        if (a.type () == typeid (type))
+            return true;
+//        if constexpr (is_same_v <X, type>)
+//            return true;
+        else
+            return  NEXT::template has_any <X...> (a);
+    }
+    
     
     
     #undef NEXT
@@ -199,6 +210,16 @@ struct _type_list <Head, Before, I, Type> {
 //        if constexpr (is_same_v <X, type>)
 //            return true;
         return  false;
+    }
+    template <typename... X>
+    inline static constexpr bool has_any (any const& a)
+    {
+        if (a.type () == typeid (type))
+            return true;
+//        if constexpr (is_same_v <X, type>)
+//            return true;
+        else
+            return false;
     }
     #undef SELF
     #undef NEXT
