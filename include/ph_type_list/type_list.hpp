@@ -169,13 +169,20 @@ struct _type_list <Head, Before, I, First, Rest...> {
   
     
     template <typename P>
-    constexpr auto find () -> int
+    inline static constexpr auto _find () -> int
     {
         if constexpr (is_same_v <P, type>)
+        {
+//            cout << "sho" << endl;
             return I;
+        }
+            
         else
-            return NEXT::template find <P> ();
+            return NEXT::template _find <P> ();
     }
+    
+    template <typename P>
+    inline static constexpr int find = _find <P> ();
     
     #undef NEXT
     #undef SELF
@@ -231,13 +238,16 @@ struct _type_list <Head, Before, I, Type> {
             return false;
     }
     template <typename P>
-    constexpr auto find () -> int
+    inline static constexpr auto _find () -> int
     {
         if constexpr (is_same_v <P, type>)
             return I;
         else
             return -1;
     }
+    
+    
+    
     #undef SELF
     #undef NEXT
 };
