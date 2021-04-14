@@ -166,7 +166,16 @@ struct _type_list <Head, Before, I, First, Rest...> {
             return  NEXT::template has_any <X...> (a);
     }
     
+  
     
+    template <typename P>
+    constexpr auto find () -> int
+    {
+        if constexpr (is_same_v <P, type>)
+            return I;
+        else
+            return NEXT::template find <P> ();
+    }
     
     #undef NEXT
     #undef SELF
@@ -220,6 +229,14 @@ struct _type_list <Head, Before, I, Type> {
 //            return true;
         else
             return false;
+    }
+    template <typename P>
+    constexpr auto find () -> int
+    {
+        if constexpr (is_same_v <P, type>)
+            return I;
+        else
+            return -1;
     }
     #undef SELF
     #undef NEXT
