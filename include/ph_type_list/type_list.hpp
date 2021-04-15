@@ -134,6 +134,9 @@ struct _type_list <Head, Before, I, First, Rest...> {
         requires (j >= 0 and j < size)
         using at = conditional_t <j == i, SELF, typename NEXT::iter::template at <j>>;
     };
+    template <int j>
+//    requires (j >= 0 and j < size)
+    using type_at = conditional_t <j == I, type, typename NEXT::template type_at <j>>;
     template <typename X>
     inline static constexpr bool _has ()
     {
@@ -211,6 +214,8 @@ struct _type_list <Head, Before, I, Type> {
         template <class X>
         using push       = decltype (push_type_list <i, X> (first {}));
     };
+    template <int j>
+    using type_at = conditional_t <j == I, type, null>;
     template <typename X>
     inline static constexpr bool _has ()
     {
