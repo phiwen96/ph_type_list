@@ -1,4 +1,5 @@
 #pragma once
+#include <ph_type/type.hpp>
 using namespace std;
 
 
@@ -114,7 +115,7 @@ template <class Head, class Before, int I, class First, class... Rest>
 struct _type_list <Head, Before, I, First, Rest...> {
     #define SELF _type_list <Head, Before, I, First, Rest...>
     #define NEXT _type_list <conditional_t <is_same_v <Head, null>, SELF, Head>, SELF, I + 1, Rest...>
-    using type          = First;
+    using value_type          = First;
     using as_tuple         = tuple <First, Rest...>;
     template <template <class...> class T>
     using change_container = T <First, Rest...>;
@@ -136,11 +137,11 @@ struct _type_list <Head, Before, I, First, Rest...> {
     };
     template <int j>
 //    requires (j >= 0 and j < size)
-    using type_at = conditional_t <j == I, type, typename NEXT::template type_at <j>>;
+    using type_at = conditional_t <j == I, value_type, typename NEXT::template type_at <j>>;
     template <typename X>
     inline static constexpr bool _has ()
     {
-        if constexpr (is_same_v <X, type>)
+        if constexpr (is_same_v <X, value_type>)
             return true;
         return  NEXT::template _has <X> ();
     }
@@ -150,7 +151,7 @@ struct _type_list <Head, Before, I, First, Rest...> {
     template <typename... X>
     inline static constexpr bool has_variant (variant <X...> const& v)
     {
-        if (visit ([]<typename Y>(Y const&)constexpr -> bool{return is_same_v <Y, type>;}, v))
+        if (visit ([]<typename Y>(Y const&)constexpr -> bool{return is_same_v <Y, value_type>;}, v))
             return true;
 //        if constexpr (is_same_v <X, type>)
 //            return true;
@@ -161,7 +162,7 @@ struct _type_list <Head, Before, I, First, Rest...> {
     template <typename... X>
     inline static constexpr bool has_any (any const& a)
     {
-        if (a.type () == typeid (type))
+        if (a.type () == typeid (value_type))
             return true;
 //        if constexpr (is_same_v <X, type>)
 //            return true;
@@ -169,12 +170,23 @@ struct _type_list <Head, Before, I, First, Rest...> {
             return  NEXT::template has_any <X...> (a);
     }
     
+    template <template <typename...> typename Y, typename... X>
+    inline static constexpr bool has_vari ( Y <X...> const& a)
+    {
+        if (type <value_type> == a)
+            return true;
+//        if constexpr (is_same_v <X, type>)
+//            return true;
+        else
+            return  NEXT::template has_vari <X...> (a);
+    }
+    
   
     
     template <typename P>
     inline static constexpr auto _find () -> int
     {
-        if constexpr (is_same_v <P, type>)
+        if constexpr (is_same_v <P, value_type>)
         {
 //            cout << "sho" << endl;
             return I;
@@ -195,7 +207,7 @@ template <class Head, class Before, int I, class Type>
 struct _type_list <Head, Before, I, Type> {
     #define SELF _type_list <Head, Before, I, Type>
     #define NEXT null
-    using type = Type;
+    using value_type = Type;
     using as_tuple = tuple <Type>;
     inline static constexpr int i = I;
     inline static constexpr int size = I + 1;
@@ -215,18 +227,18 @@ struct _type_list <Head, Before, I, Type> {
         using push       = decltype (push_type_list <i, X> (first {}));
     };
     template <int j>
-    using type_at = conditional_t <j == I, type, null>;
+    using type_at = conditional_t <j == I, value_type, null>;
     template <typename X>
     inline static constexpr bool _has ()
     {
-        if constexpr (is_same_v <X, type>)
+        if constexpr (is_same_v <X, value_type>)
             return true;
         return false;
     }
     template <typename... X>
     inline static constexpr bool has_variant (variant <X...> const& v)
     {
-        if (visit ([]<typename Y>(Y const&){return is_same_v <Y, type>;}, v))
+        if (visit ([]<typename Y>(Y const&){return is_same_v <Y, value_type>;}, v))
             return true;
 //        if constexpr (is_same_v <X, type>)
 //            return true;
@@ -235,17 +247,29 @@ struct _type_list <Head, Before, I, Type> {
     template <typename... X>
     inline static constexpr bool has_any (any const& a)
     {
-        if (a.type () == typeid (type))
+        if (a.type () == typeid (value_type))
             return true;
 //        if constexpr (is_same_v <X, type>)
 //            return true;
         else
             return false;
     }
+    
+    template <template <typename...> typename Y, typename... X>
+    inline static constexpr bool has_vari (Y <X...> const& a)
+    {
+        if (type <value_type> == a)
+            return true;
+//        if constexpr (is_same_v <X, type>)
+//            return true;
+        else
+            return false;
+    }
+    
     template <typename P>
     inline static constexpr auto _find () -> int
     {
-        if constexpr (is_same_v <P, type>)
+        if constexpr (is_same_v <P, value_type>)
             return I;
         else
             return -1;
