@@ -178,7 +178,7 @@ struct _type_list <Head, Before, I, First, Rest...> {
 //        if constexpr (is_same_v <X, type>)
 //            return true;
         else
-            return  NEXT::template has_vari <X...> (a);
+            return  NEXT::template has_vari (a);
     }
     
   
