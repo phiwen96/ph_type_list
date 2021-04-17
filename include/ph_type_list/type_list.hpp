@@ -286,6 +286,7 @@ struct _type_list <Head, Before, I, Type> {
 
 
 
+
 template <class... T>
 struct tuple <type_list_t <T...>> : std::tuple <T...>
 {
@@ -393,3 +394,103 @@ ostream& operator<< (ostream& os, type_list_t <T, U...> const& s) {
 //
 //template <std::size_t N>
 //using make_index_sequence = std::decay_t<decltype(make_index_sequence_impl<N>())>;
+
+
+
+
+
+
+/**
+ ///////////////////////////////////////////////////
+ ///  TYPE_AT
+ //////////////////////////////////////////////////
+ */
+
+
+
+
+
+template <int I, typename T, typename... U>
+struct type_at_t : type_at_t <I + 1, U...>
+{
+//    using type_at_t <I + 1, U...>::at;
+    using type = T;
+    
+    template <int i>
+    requires (i >= I and i < sizeof... (U) + 1)
+    using at = conditional_t <i == I, type_at_t, typename type_at_t <I, U...>::template at <I>>;
+    
+
+
+};
+
+template <typename T, typename U, typename... V>
+struct next_type_t
+{
+    using type = U;
+};
+
+template <typename T, typename... U>
+struct tail_type_t
+{
+    using type = tail_type_t <U...>;
+};
+
+
+
+template <typename... T>
+using next_type = typename next_type_t <T...>::type;
+
+template <int I, typename T>
+struct type_at_t <I, T>
+{
+    using type = T;
+    
+    template <int i>
+    requires (i == I)
+    using at = type_at_t <I, T>;
+};
+
+
+template <int i, typename... T>
+using type_at = typename type_at_t <0, T...>::template at <i>::type;
+
+static_assert (is_same_v <type_at <0, int, double, string>, int>, "");
+
+
+
+//template <
+
+template <int i, typename... T>
+auto test_at_imp ()
+{
+    auto fun = []<int j, int me, typename A, typename... B>(auto f){
+        return (j == me ? 0 : 2);
+        if constexpr (j == me)
+        {
+            return declval <A> ();
+        } else
+        {
+            return f.template operator() <j, me + 1, B...> ();
+        }
+    };
+    return fun.template operator () <i, 0, T...> (fun);
+}
+
+
+
+template <int i, typename... T>
+auto test_at_imp_2 ()
+{
+    auto a = [] <size_t... I> (index_sequence <I...>) {
+//        (([]<int j>{if (j == 2) return}), ...);
+//        return ()
+    } (make_index_sequence <sizeof... (T)> ());
+}
+
+//template <int i, int I, typename T, typename... U>
+//using test_at_imp = conditional_t <i == I, T, test_at_imp <i, I + 1, U...>>;
+
+template <int i, typename... T>
+requires (i >= 0 and i <  sizeof... (T))
+using test_at = decltype (test_at_imp <i, T...>());
