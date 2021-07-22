@@ -28,7 +28,7 @@ add_library (ph_type_list
 ph_precompile (TARGET ph_type_list PUBLIC PCH ${std_pch} ${boost_pch})
 
 add_library (ph::type_list ALIAS ph_type_list)
-target_link_libraries (ph_type_list PRIVATE ph::type ${Boost_LIBRARIES})
+target_link_libraries (ph_type_list PRIVATE ${Boost_LIBRARIES})
 target_include_directories (ph_type_list PUBLIC ${PROJECT_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
 
 target_compile_features (ph_type_list PUBLIC cxx_std_20)

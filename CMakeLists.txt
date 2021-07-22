@@ -12,9 +12,9 @@ if(NOT TARGET phake)
 	add_subdirectory(cmake/phake)
 endif(NOT TARGET phake)
 
-if (NOT TARGET ph_type)
-	add_subdirectory (dependencies/ph_type)
-endif ()
+# if (NOT TARGET ph_type)
+# 	add_subdirectory (dependencies/ph_type)
+# endif ()
 
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 	
